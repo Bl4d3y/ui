@@ -1,46 +1,225 @@
-local WaveUI = {}
+-- UI Library
+local Library = {}
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
 
-function WaveUI:CreateWindow(title)
+function Library:CreateWindow(title)
     local ScreenGui = Instance.new("ScreenGui")
-    local Frame = Instance.new("Frame")
+    local MainFrame = Instance.new("Frame")
     local Title = Instance.new("TextLabel")
+    local Sidebar = Instance.new("Frame")
+    local HomeButton = Instance.new("TextButton")
     
-    ScreenGui.Name = "WaveUI"
+    ScreenGui.Name = "CustomUILibrary"
     ScreenGui.Parent = game.CoreGui
-    
-    Frame.Name = "MainFrame"
-    Frame.Parent = ScreenGui
-    Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    Frame.Size = UDim2.new(0, 400, 0, 300)
-    Frame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    
+
+    MainFrame.Name = "MainFrame"
+    MainFrame.Parent = ScreenGui
+    MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+    MainFrame.Size = UDim2.new(0, 600, 0, 400)
+    MainFrame.ClipsDescendants = true
+
     Title.Name = "Title"
-    Title.Parent = Frame
-    Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    Title.Size = UDim2.new(1, 0, 0, 50)
+    Title.Parent = MainFrame
+    Title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    Title.Size = UDim2.new(0, 600, 0, 30)
     Title.Font = Enum.Font.SourceSans
     Title.Text = title
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.TextSize = 24
     
-    return Frame
+    Sidebar.Name = "Sidebar"
+    Sidebar.Parent = MainFrame
+    Sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    Sidebar.Size = UDim2.new(0, 150, 1, -30)
+    Sidebar.Position = UDim2.new(0, 0, 0, 30)
+
+    HomeButton.Name = "HomeButton"
+    HomeButton.Parent = Sidebar
+    HomeButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    HomeButton.Size = UDim2.new(1, 0, 0, 50)
+    HomeButton.Font = Enum.Font.SourceSans
+    HomeButton.Text = "Home"
+    HomeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    HomeButton.TextSize = 18
+
+    return MainFrame
 end
 
-function WaveUI:CreateButton(parent, text, callback)
+function Library:CreateButton(parent, text, callback)
     local Button = Instance.new("TextButton")
     
-    Button.Name = "Button"
     Button.Parent = parent
-    Button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    Button.Size = UDim2.new(0, 100, 0, 50)
+    Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Button.Size = UDim2.new(1, -10, 0, 50)
+    Button.Position = UDim2.new(0, 5, 0, 5)
     Button.Font = Enum.Font.SourceSans
     Button.Text = text
     Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Button.TextSize = 20
-    
-    Button.MouseButton1Click:Connect(callback)
-    
-    return Button
+    Button.TextSize = 18
+
+    Button.MouseButton1Click:Connect(function()
+        callback()
+        -- Add animation
+        local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        local tween = TweenService:Create(Button, tweenInfo, {BackgroundColor3 = Color3.fromRGB(45, 45, 45)})
+        tween:Play()
+        tween.Completed:Connect(function()
+            local resetTween = TweenService:Create(Button, tweenInfo, {BackgroundColor3 = Color3.fromRGB(35, 35, 35)})
+            resetTween:Play()
+        end)
+    end)
 end
 
-return WaveUI
+function Library:CreateSlider(parent, text, min, max, default, callback)
+    local SliderFrame = Instance.new("Frame")
+    local SliderLabel = Instance.new("TextLabel")
+    local SliderBar = Instance.new("Frame")
+    local SliderButton = Instance.new("TextButton")
+    
+    SliderFrame.Parent = parent
+    SliderFrame.Size = UDim2.new(1, -10, 0, 50)
+    SliderFrame.Position = UDim2.new(0, 5, 0, 60)
+    SliderFrame.BackgroundTransparency = 1
+
+    SliderLabel.Parent = SliderFrame
+    SliderLabel.Size = UDim2.new(1, 0, 0, 20)
+    SliderLabel.Position = UDim2.new(0, 0, 0, 0)
+    SliderLabel.Font = Enum.Font.SourceSans
+    SliderLabel.Text = text
+    SliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SliderLabel.TextSize = 18
+    SliderLabel.BackgroundTransparency = 1
+
+    SliderBar.Parent = SliderFrame
+    SliderBar.Size = UDim2.new(1, -20, 0, 10)
+    SliderBar.Position = UDim2.new(0, 10, 0, 30)
+    SliderBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+
+    SliderButton.Parent = SliderBar
+    SliderButton.Size = UDim2.new(0, 20, 0, 20)
+    SliderButton.Position = UDim2.new((default - min) / (max - min), -10, -0.5, -5)
+    SliderButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+    SliderButton.Font = Enum.Font.SourceSans
+    SliderButton.Text = ""
+    
+    local function updateSlider(input)
+        local scale = (input.Position.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X
+        scale = math.clamp(scale, 0, 1)
+        SliderButton.Position = UDim2.new(scale, -10, -0.5, -5)
+        local value = min + (max - min) * scale
+        callback(value)
+    end
+
+    SliderButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            local connection
+            connection = UIS.InputChanged:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseMovement then
+                    updateSlider(input)
+                end
+            end)
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    connection:Disconnect()
+                end
+            end)
+        end
+    end)
+end
+
+function Library:CreateToggle(parent, text, default, callback)
+    local ToggleFrame = Instance.new("Frame")
+    local ToggleLabel = Instance.new("TextLabel")
+    local ToggleButton = Instance.new("TextButton")
+
+    ToggleFrame.Parent = parent
+    ToggleFrame.Size = UDim2.new(1, -10, 0, 50)
+    ToggleFrame.Position = UDim2.new(0, 5, 0, 115)
+    ToggleFrame.BackgroundTransparency = 1
+
+    ToggleLabel.Parent = ToggleFrame
+    ToggleLabel.Size = UDim2.new(1, -60, 0, 50)
+    ToggleLabel.Position = UDim2.new(0, 0, 0, 0)
+    ToggleLabel.Font = Enum.Font.SourceSans
+    ToggleLabel.Text = text
+    ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleLabel.TextSize = 18
+    ToggleLabel.BackgroundTransparency = 1
+
+    ToggleButton.Parent = ToggleFrame
+    ToggleButton.Size = UDim2.new(0, 50, 0, 20)
+    ToggleButton.Position = UDim2.new(1, -60, 0.5, -10)
+    ToggleButton.BackgroundColor3 = default and Color3.fromRGB(45, 200, 45) or Color3.fromRGB(200, 45, 45)
+    ToggleButton.Font = Enum.Font.SourceSans
+    ToggleButton.Text = ""
+    
+    local function toggle()
+        default = not default
+        ToggleButton.BackgroundColor3 = default and Color3.fromRGB(45, 200, 45) or Color3.fromRGB(200, 45, 45)
+        callback(default)
+    end
+
+    ToggleButton.MouseButton1Click:Connect(toggle)
+end
+
+function Library:CreateDropdown(parent, text, options, callback)
+    local DropdownFrame = Instance.new("Frame")
+    local DropdownLabel = Instance.new("TextLabel")
+    local DropdownButton = Instance.new("TextButton")
+    local OptionsFrame = Instance.new("Frame")
+    
+    DropdownFrame.Parent = parent
+    DropdownFrame.Size = UDim2.new(1, -10, 0, 50)
+    DropdownFrame.Position = UDim2.new(0, 5, 0, 170)
+    DropdownFrame.BackgroundTransparency = 1
+
+    DropdownLabel.Parent = DropdownFrame
+    DropdownLabel.Size = UDim2.new(1, -30, 0, 50)
+    DropdownLabel.Position = UDim2.new(0, 0, 0, 0)
+    DropdownLabel.Font = Enum.Font.SourceSans
+    DropdownLabel.Text = text
+    DropdownLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    DropdownLabel.TextSize = 18
+    DropdownLabel.BackgroundTransparency = 1
+
+    DropdownButton.Parent = DropdownFrame
+    DropdownButton.Size = UDim2.new(0, 20, 0, 20)
+    DropdownButton.Position = UDim2.new(1, -30, 0.5, -10)
+    DropdownButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    DropdownButton.Font = Enum.Font.SourceSans
+    DropdownButton.Text = "v"
+    DropdownButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    DropdownButton.TextSize = 18
+    
+    OptionsFrame.Parent = DropdownFrame
+    OptionsFrame.Size = UDim2.new(1, -10, 0, #options * 20)
+    OptionsFrame.Position = UDim2.new(0, 5, 1, 5)
+    OptionsFrame.BackgroundTransparency = 1
+    OptionsFrame.Visible = false
+    
+    for i, option in ipairs(options) do
+        local OptionButton = Instance.new("TextButton")
+        OptionButton.Parent = OptionsFrame
+        OptionButton.Size = UDim2.new(1, 0, 0, 20)
+        OptionButton.Position = UDim2.new(0, 0, 0, (i-1) * 20)
+        OptionButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        OptionButton.Font = Enum.Font.SourceSans
+        OptionButton.Text = option
+        OptionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        OptionButton.TextSize = 18
+        
+        OptionButton.MouseButton1Click:Connect(function()
+            DropdownLabel.Text = text .. ": " .. option
+            OptionsFrame.Visible = false
+            callback(option)
+        end)
+    end
+    
+    DropdownButton.MouseButton1Click:Connect(function()
+        OptionsFrame.Visible = not OptionsFrame.Visible
+    end)
+end
+
+return Library
