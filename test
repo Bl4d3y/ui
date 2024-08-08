@@ -1,4 +1,3 @@
--- UI Library
 local Library = {}
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -6,52 +5,65 @@ local TweenService = game:GetService("TweenService")
 function Library:CreateWindow(title)
     local ScreenGui = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
+    local UICornerMain = Instance.new("UICorner")
     local Title = Instance.new("TextLabel")
     local Sidebar = Instance.new("Frame")
+    local UICornerSidebar = Instance.new("UICorner")
     local HomeButton = Instance.new("TextButton")
+    local UICornerButton = Instance.new("UICorner")
     
     ScreenGui.Name = "CustomUILibrary"
     ScreenGui.Parent = game.CoreGui
 
     MainFrame.Name = "MainFrame"
     MainFrame.Parent = ScreenGui
-    MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 48)
     MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
     MainFrame.Size = UDim2.new(0, 600, 0, 400)
     MainFrame.ClipsDescendants = true
 
+    UICornerMain.Parent = MainFrame
+    UICornerMain.CornerRadius = UDim.new(0, 10)
+
     Title.Name = "Title"
     Title.Parent = MainFrame
-    Title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    Title.Size = UDim2.new(0, 600, 0, 30)
+    Title.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+    Title.Size = UDim2.new(0, 600, 0, 40)
     Title.Font = Enum.Font.SourceSans
     Title.Text = title
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.TextSize = 24
-    
+
     Sidebar.Name = "Sidebar"
     Sidebar.Parent = MainFrame
-    Sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    Sidebar.Size = UDim2.new(0, 150, 1, -30)
-    Sidebar.Position = UDim2.new(0, 0, 0, 30)
+    Sidebar.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+    Sidebar.Size = UDim2.new(0, 150, 1, -40)
+    Sidebar.Position = UDim2.new(0, 0, 0, 40)
+    
+    UICornerSidebar.Parent = Sidebar
+    UICornerSidebar.CornerRadius = UDim.new(0, 10)
 
     HomeButton.Name = "HomeButton"
     HomeButton.Parent = Sidebar
-    HomeButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    HomeButton.BackgroundColor3 = Color3.fromRGB(45, 45, 48)
     HomeButton.Size = UDim2.new(1, 0, 0, 50)
     HomeButton.Font = Enum.Font.SourceSans
     HomeButton.Text = "Home"
     HomeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     HomeButton.TextSize = 18
 
+    UICornerButton.Parent = HomeButton
+    UICornerButton.CornerRadius = UDim.new(0, 10)
+
     return MainFrame
 end
 
 function Library:CreateButton(parent, text, callback)
     local Button = Instance.new("TextButton")
+    local UICornerButton = Instance.new("UICorner")
     
     Button.Parent = parent
-    Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Button.BackgroundColor3 = Color3.fromRGB(45, 45, 48)
     Button.Size = UDim2.new(1, -10, 0, 50)
     Button.Position = UDim2.new(0, 5, 0, 5)
     Button.Font = Enum.Font.SourceSans
@@ -59,14 +71,17 @@ function Library:CreateButton(parent, text, callback)
     Button.TextColor3 = Color3.fromRGB(255, 255, 255)
     Button.TextSize = 18
 
+    UICornerButton.Parent = Button
+    UICornerButton.CornerRadius = UDim.new(0, 10)
+
     Button.MouseButton1Click:Connect(function()
         callback()
         -- Add animation
         local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tween = TweenService:Create(Button, tweenInfo, {BackgroundColor3 = Color3.fromRGB(45, 45, 45)})
+        local tween = TweenService:Create(Button, tweenInfo, {BackgroundColor3 = Color3.fromRGB(55, 55, 58)})
         tween:Play()
         tween.Completed:Connect(function()
-            local resetTween = TweenService:Create(Button, tweenInfo, {BackgroundColor3 = Color3.fromRGB(35, 35, 35)})
+            local resetTween = TweenService:Create(Button, tweenInfo, {BackgroundColor3 = Color3.fromRGB(45, 45, 48)})
             resetTween:Play()
         end)
     end)
@@ -74,14 +89,20 @@ end
 
 function Library:CreateSlider(parent, text, min, max, default, callback)
     local SliderFrame = Instance.new("Frame")
+    local UICornerSliderFrame = Instance.new("UICorner")
     local SliderLabel = Instance.new("TextLabel")
     local SliderBar = Instance.new("Frame")
+    local UICornerSliderBar = Instance.new("UICorner")
     local SliderButton = Instance.new("TextButton")
+    local UICornerSliderButton = Instance.new("UICorner")
     
     SliderFrame.Parent = parent
     SliderFrame.Size = UDim2.new(1, -10, 0, 50)
     SliderFrame.Position = UDim2.new(0, 5, 0, 60)
     SliderFrame.BackgroundTransparency = 1
+
+    UICornerSliderFrame.Parent = SliderFrame
+    UICornerSliderFrame.CornerRadius = UDim.new(0, 10)
 
     SliderLabel.Parent = SliderFrame
     SliderLabel.Size = UDim2.new(1, 0, 0, 20)
@@ -95,14 +116,20 @@ function Library:CreateSlider(parent, text, min, max, default, callback)
     SliderBar.Parent = SliderFrame
     SliderBar.Size = UDim2.new(1, -20, 0, 10)
     SliderBar.Position = UDim2.new(0, 10, 0, 30)
-    SliderBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    SliderBar.BackgroundColor3 = Color3.fromRGB(65, 65, 68)
+
+    UICornerSliderBar.Parent = SliderBar
+    UICornerSliderBar.CornerRadius = UDim.new(0, 10)
 
     SliderButton.Parent = SliderBar
     SliderButton.Size = UDim2.new(0, 20, 0, 20)
     SliderButton.Position = UDim2.new((default - min) / (max - min), -10, -0.5, -5)
-    SliderButton.BackgroundColor3 = Color3.fromRGB(65, 65, 65)
+    SliderButton.BackgroundColor3 = Color3.fromRGB(75, 75, 78)
     SliderButton.Font = Enum.Font.SourceSans
     SliderButton.Text = ""
+
+    UICornerSliderButton.Parent = SliderButton
+    UICornerSliderButton.CornerRadius = UDim.new(0, 10)
     
     local function updateSlider(input)
         local scale = (input.Position.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X
@@ -131,13 +158,18 @@ end
 
 function Library:CreateToggle(parent, text, default, callback)
     local ToggleFrame = Instance.new("Frame")
+    local UICornerToggleFrame = Instance.new("UICorner")
     local ToggleLabel = Instance.new("TextLabel")
     local ToggleButton = Instance.new("TextButton")
+    local UICornerToggleButton = Instance.new("UICorner")
 
     ToggleFrame.Parent = parent
     ToggleFrame.Size = UDim2.new(1, -10, 0, 50)
     ToggleFrame.Position = UDim2.new(0, 5, 0, 115)
     ToggleFrame.BackgroundTransparency = 1
+
+    UICornerToggleFrame.Parent = ToggleFrame
+    UICornerToggleFrame.CornerRadius = UDim.new(0, 10)
 
     ToggleLabel.Parent = ToggleFrame
     ToggleLabel.Size = UDim2.new(1, -60, 0, 50)
@@ -154,6 +186,9 @@ function Library:CreateToggle(parent, text, default, callback)
     ToggleButton.BackgroundColor3 = default and Color3.fromRGB(45, 200, 45) or Color3.fromRGB(200, 45, 45)
     ToggleButton.Font = Enum.Font.SourceSans
     ToggleButton.Text = ""
+
+    UICornerToggleButton.Parent = ToggleButton
+    UICornerToggleButton.CornerRadius = UDim.new(0, 10)
     
     local function toggle()
         default = not default
@@ -166,14 +201,20 @@ end
 
 function Library:CreateDropdown(parent, text, options, callback)
     local DropdownFrame = Instance.new("Frame")
+    local UICornerDropdownFrame = Instance.new("UICorner")
     local DropdownLabel = Instance.new("TextLabel")
     local DropdownButton = Instance.new("TextButton")
+    local UICornerDropdownButton = Instance.new("UICorner")
     local OptionsFrame = Instance.new("Frame")
+    local UICornerOptionsFrame = Instance.new("UICorner")
     
     DropdownFrame.Parent = parent
     DropdownFrame.Size = UDim2.new(1, -10, 0, 50)
     DropdownFrame.Position = UDim2.new(0, 5, 0, 170)
     DropdownFrame.BackgroundTransparency = 1
+
+    UICornerDropdownFrame.Parent = DropdownFrame
+    UICornerDropdownFrame.CornerRadius = UDim.new(0, 10)
 
     DropdownLabel.Parent = DropdownFrame
     DropdownLabel.Size = UDim2.new(1, -30, 0, 50)
@@ -187,11 +228,14 @@ function Library:CreateDropdown(parent, text, options, callback)
     DropdownButton.Parent = DropdownFrame
     DropdownButton.Size = UDim2.new(0, 20, 0, 20)
     DropdownButton.Position = UDim2.new(1, -30, 0.5, -10)
-    DropdownButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    DropdownButton.BackgroundColor3 = Color3.fromRGB(45, 45, 48)
     DropdownButton.Font = Enum.Font.SourceSans
     DropdownButton.Text = "v"
     DropdownButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     DropdownButton.TextSize = 18
+    
+    UICornerDropdownButton.Parent = DropdownButton
+    UICornerDropdownButton.CornerRadius = UDim.new(0, 10)
     
     OptionsFrame.Parent = DropdownFrame
     OptionsFrame.Size = UDim2.new(1, -10, 0, #options * 20)
@@ -199,16 +243,24 @@ function Library:CreateDropdown(parent, text, options, callback)
     OptionsFrame.BackgroundTransparency = 1
     OptionsFrame.Visible = false
     
+    UICornerOptionsFrame.Parent = OptionsFrame
+    UICornerOptionsFrame.CornerRadius = UDim.new(0, 10)
+    
     for i, option in ipairs(options) do
         local OptionButton = Instance.new("TextButton")
+        local UICornerOptionButton = Instance.new("UICorner")
+
         OptionButton.Parent = OptionsFrame
         OptionButton.Size = UDim2.new(1, 0, 0, 20)
         OptionButton.Position = UDim2.new(0, 0, 0, (i-1) * 20)
-        OptionButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        OptionButton.BackgroundColor3 = Color3.fromRGB(45, 45, 48)
         OptionButton.Font = Enum.Font.SourceSans
         OptionButton.Text = option
         OptionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         OptionButton.TextSize = 18
+
+        UICornerOptionButton.Parent = OptionButton
+        UICornerOptionButton.CornerRadius = UDim.new(0, 10)
         
         OptionButton.MouseButton1Click:Connect(function()
             DropdownLabel.Text = text .. ": " .. option
